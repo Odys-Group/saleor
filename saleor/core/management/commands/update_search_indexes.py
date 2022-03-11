@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Update products
-        products_total_count = Product.objects.filter(search_document="").count()
+        products_total_count = Product.objects.filter(search_vector=None).count()
         self.stdout.write(f"Updating products: {products_total_count}")
         set_product_search_document_values.delay()
 
