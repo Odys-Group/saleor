@@ -46,8 +46,7 @@ class RequestPayload(TypedDict):
 
 class ResponsePayload(TypedDict):
     headers: Dict[str, str]
-    statusCode: int
-    reasonPhrase: str
+    statusCode: Optional[int]
     contentLength: int
 
 
@@ -202,7 +201,6 @@ def generate_api_call_payload(
     response_payload = ResponsePayload(
         headers=hide_sensitive_headers(dict(response.headers)),
         statusCode=response.status_code,
-        reasonPhrase=response.reason_phrase,
         contentLength=len(response.content),
     )
     app_payload: Optional[AppPayload] = None
@@ -281,8 +279,7 @@ def generate_event_delivery_attempt_payload(
             headers=json.loads(attempt.response_headers or "{}"),
             contentLength=len(response_body.encode("utf-8")),
             body=TRUNC_PLACEHOLDER,
-            statusCode=200,
-            reasonPhrase="OK",
+            statusCode=attempt.response_status_code,
         ),
         eventDelivery=delivery_data,
         webhook=webhook_data,

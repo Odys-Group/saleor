@@ -19,12 +19,9 @@ from ..payloads import (
     serialize_gql_operation_results,
 )
 from ..utils import JsonTruncText
-from .conftest import GqlOperationFactoryType
 
 
-def test_serialize_gql_operation_result(
-    gql_operation_factory: GqlOperationFactoryType,
-):
+def test_serialize_gql_operation_result(gql_operation_factory):
     query = "query FirstQuery { shop { name } }"
     result = {"data": "result"}
     operation_result = gql_operation_factory(query, "FirstQuery", None, result)
@@ -54,9 +51,7 @@ def test_serialize_gql_operation_result_when_too_low_bytes_limit():
         serialize_gql_operation_result(result, GQL_OPERATION_PLACEHOLDER_SIZE - 1)
 
 
-def test_serialize_gql_operation_result_when_minimal_bytes_limit(
-    gql_operation_factory: GqlOperationFactoryType,
-):
+def test_serialize_gql_operation_result_when_minimal_bytes_limit(gql_operation_factory):
     query = "query FirstQuery { shop { name } }"
     operation_result = gql_operation_factory(
         query, "FirstQuery", None, {"data": "result"}
@@ -75,9 +70,7 @@ def test_serialize_gql_operation_result_when_minimal_bytes_limit(
     assert len(serialized) <= GQL_OPERATION_PLACEHOLDER_SIZE
 
 
-def test_serialize_gql_operation_result_when_truncated(
-    gql_operation_factory: GqlOperationFactoryType,
-):
+def test_serialize_gql_operation_result_when_truncated(gql_operation_factory):
     query = "query FirstQuery { shop { name } }"
     operation_result = gql_operation_factory(
         query, "FirstQuery", None, {"data": "result"}
@@ -95,9 +88,7 @@ def test_serialize_gql_operation_result_when_truncated(
     assert len(serialized) <= bytes_limit
 
 
-def test_serialize_gql_operation_results(
-    gql_operation_factory: GqlOperationFactoryType,
-):
+def test_serialize_gql_operation_results(gql_operation_factory):
     query = "query FirstQuery { shop { name } } query SecondQuery { shop { name } }"
     result = {"data": "result"}
     first_result = gql_operation_factory(query, "FirstQuery", None, result)
@@ -120,7 +111,7 @@ def test_serialize_gql_operation_results(
 
 
 def test_serialize_gql_operation_results_when_minimal_bytes_limit(
-    gql_operation_factory: GqlOperationFactoryType,
+    gql_operation_factory,
 ):
     query = "query FirstQuery { shop { name } } query SecondQuery { shop { name } }"
     result = {"data": "result"}
@@ -148,7 +139,7 @@ def test_serialize_gql_operation_results_when_minimal_bytes_limit(
 
 
 def test_serialize_gql_operation_results_when_too_low_bytes_limit(
-    gql_operation_factory: GqlOperationFactoryType,
+    gql_operation_factory,
 ):
     query = "query FirstQuery { shop { name } } query SecondQuery { shop { name } }"
     result = {"data": "result"}
@@ -198,7 +189,6 @@ def test_generate_api_call_payload(app, rf, gql_operation_factory):
             "headers": {"Content-Type": "application/json"},
             "contentLength": 20,
             "statusCode": 200,
-            "reasonPhrase": "OK",
         },
         "app": {
             "id": graphene.Node.to_global_id("App", app.pk),
@@ -307,8 +297,7 @@ def test_generate_event_delivery_attempt_payload(event_attempt):
         "response": {
             "headers": {},
             "contentLength": 16,
-            "reasonPhrase": "OK",
-            "statusCode": 200,
+            "statusCode": None,
             "body": {"text": "example_response", "truncated": False},
         },
         "eventDelivery": {
