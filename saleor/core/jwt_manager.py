@@ -1,3 +1,4 @@
+import base64
 import json
 import logging
 from os.path import exists, join
@@ -58,6 +59,8 @@ class JWTManager(JWTManagerBase):
     def _get_private_key(cls, pem: Union[str, bytes]):
         if isinstance(pem, str):
             pem = pem.encode("utf-8")
+
+        pem = base64.b64decode(pem)
 
         password = settings.RSA_PRIVATE_PASSWORD
         if isinstance(password, str):
